@@ -1,0 +1,130 @@
+import random
+
+def play_hangman():
+    # A predefined pool of hidden words
+    word_pool = ["grapes","apple","banana","kiwi","orange","mango"]
+    secret_word = random.choice(word_pool).lower()
+    
+    # Track the state of the game
+    revealed_word = ["_"] * len(secret_word)
+    guessed_letters = set()
+    remaining_lives = 6
+
+    # ASCII art for the hangman scaffold stages
+    stages = [
+        """
+           --------
+
+           |      |
+           |      O
+
+           |     /|\\
+           |     / \\
+           |
+        """,
+        """
+           --------
+
+           |      |
+           |      O
+
+           |     /|\\
+           |     /
+           |
+        """,
+        """
+           --------
+
+           |      |
+           |      O
+
+           |     /|
+           |
+           |
+        """,
+        """
+           --------
+
+           |      |
+           |      O
+
+           |      |
+           |
+           |
+        """,
+        """
+           --------
+
+           |      |
+           |      O
+           |
+           |
+           |
+        """,
+        """
+           --------
+
+           |      |
+           |
+           |
+           |
+           |
+        """,
+        """
+           --------
+
+           |      |
+           |
+           |
+           |
+           |
+        """
+    ]
+
+    print("--- Welcome to Python Hangman! ---")
+    
+    # Main game execution loop
+    while remaining_lives > 0 and "_" in revealed_word:
+        print(stages[remaining_lives])
+        print(f"Word to guess: {' '.join(revealed_word)}")
+        print(f"Guessed letters: {', '.join(sorted(guessed_letters)) if guessed_letters else 'None'}")
+        print(f"Remaining lives: {remaining_lives}\n")
+        
+        guess = input("Guess a letter: ").strip().lower()
+        
+        # Guard clause for invalid user inputs
+        if len(guess) != 1 or not guess.isalpha():
+            print("Invalid input! Please type a single alphabetical letter.\n")
+            continue
+            
+        # Guard clause for duplicate letter guesses
+        if guess in guessed_letters:
+            print(f"You already tried '{guess}'. Pick a new letter!\n")
+            continue
+            
+        guessed_letters.add(guess)
+        
+        # Process right vs wrong guesses
+        if guess in secret_word:
+            print(f"Nice job! '{guess}' is in the word.")
+            for index, letter in enumerate(secret_word):
+                if letter == guess:
+                    revealed_word[index] = guess
+        else:
+            print(f"Oops! '{guess}' is not in the word.")
+            remaining_lives -= 1
+            
+        print("-" * 30)
+
+    # Resolve endgame conditions
+    if "_" not in revealed_word:
+        print(f"\nCongratulations! Your guessed the word: {secret_word.upper()}")
+    else:
+        print(stages[0])
+        print(f"\nGame Over! You ran out of lives. The word was: {secret_word.upper()}")
+
+if __name__ == "__main__":
+    play_hangman()
+
+
+  
