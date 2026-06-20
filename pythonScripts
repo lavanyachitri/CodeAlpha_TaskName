@@ -1,0 +1,52 @@
+
+import os
+import shutil
+"""
+Note:- This organizes files, if file is not of below types it saves to other named folder in the same folder 
+"""
+
+def organize_folder(dir):
+    # extensions to folder names
+    file_mapping = {
+        'images': ['.jpg', '.jpeg', '.png', '.gif', '.svg'],
+        'documents': ['.pdf', '.docx', '.txt', '.xlsx', '.pptx'],
+        'archives': ['.zip', '.tar', '.gz', '.rar'],
+        'audio_video': ['.mp3', '.mp4', '.mkv', '.mov']
+    }
+
+    # Iterate through all items in the target directory
+    for filename in os.listdir(dir):
+        file_path = os.path.join(dir, filename)
+        
+        # Skip directories to prevent recursive moves
+        if os.path.isdir(file_path):
+            continue
+            
+        # Extract file extension
+        _, ext = os.path.splitext(filename)
+        ext = ext.lower()
+        
+        # Match extension to its corresponding folder
+        moved = False
+        for folder_name, extensions in file_mapping.items():
+            if ext in extensions:
+                dest_folder = os.path.join(dir, folder_name)
+                os.makedirs(dest_folder, exist_ok=True)
+                shutil.move(file_path, os.path.join(dest_folder, filename))
+                print(f"Moved: {filename} -> {folder_name}/")
+                moved = True
+                break
+        
+        # Group unrecognized extensions into an 'Others' folder
+        if not moved and ext != '':
+            other_folder = os.path.join(dir, 'Others')
+            os.makedirs(other_folder, exist_ok=True)
+            shutil.move(file_path, os.path.join(other_folder, filename))
+            print(f"Moved: {filename} -> Others/")
+
+if __name__ == "__main__":
+    # Replace with your actual directory path
+    
+    downloads_path = input("Enter folder path: ")
+    organize_folder(downloads_path)
+    print(downloads_path)
